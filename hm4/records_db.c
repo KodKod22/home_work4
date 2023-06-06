@@ -1,8 +1,8 @@
 #include "linked_list.h"
 #include"set.h"
 #include"records_db.h"
-#include"records.h"
 #include"tracks_db.h"
+#include"records.h"
 #include"tracks.h"
 #include"erro_print.h"
 #include<stdio.h>
@@ -81,9 +81,12 @@ static void printRecord(FILE *out,SetElement element){
     LinkedList *curr=record_t->own_track;
     for (int i = 0; i < linkedListGetNumElements(record_t->own_track); i++)
     {
-        linkedListPrint(curr,out,compareTrackByName);
+        linkedListPrint(curr,out,record_t->num_of_traks);
         if(linkedListGoToHead(curr)== LIST_BAD_ARGUMENTS){
-            
+            break;
+        }else{
+            record_t->num_of_traks--;
+            continue;
         }
 
     }
@@ -98,6 +101,18 @@ RecordsDB recordsDbCreate(){
         prog_erro_set(SET_OUT_OF_MEMORY);
         exit(1);
     }
-    setCreate(t->records,compareRecordByName,copyRecord,recordFree,printRecord);
+
+    if(setCreate(t->records,compareRecordByName,copyRecord,recordFree,printRecord)==SET_BAD_ARGUMENTS){
+        prog_erro_set(SET_BAD_ARGUMENTS);
+        exit(1);
+    }
+
+    if(setCreate(t->records,compareRecordByName,copyRecord,recordFree,printRecord)==SET_OUT_OF_MEMORY){
+        prog_erro_set(SET_OUT_OF_MEMORY);
+        exit(1);
+    }
+
+    
+
 }
 
