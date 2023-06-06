@@ -2,8 +2,6 @@
 #define _RECORDS_H
 #include"set.h"
 
-typedef struct record_curr* record;
-
 typedef SetElement (*copyRecord)(SetElement);
 typedef void       (*recordFree)(SetElement);
 typedef int        (*compareRecordByName)(SetElement,SetElement);

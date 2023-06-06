@@ -14,7 +14,7 @@ typedef struct record_curr
     char *name;
     int year;
     int num_of_traks;
-    enum record_category_e ct;
+    RecordsCategory ct;
     LinkedList *own_track;
 }record_curr,*record;
 
@@ -22,6 +22,10 @@ typedef struct RecordsDB_s
 {
     Set records;
 }RecordsDB_s;
+
+static void print_catgory(FILE *out,RecordsCategory rez){
+    
+}
 
 static SetElement copyRecord(SetElement d){
     if (!d)
@@ -78,6 +82,30 @@ static void printRecord(FILE *out,SetElement element){
         return;
     }
     fprintf(out,"%s %d %d",record_t->name,record_t->year,record_t->num_of_traks);
+    switch (record_t->ct)
+    {
+    case ROCK:
+        fprintf(out,"ROCK");
+        break;
+    case POP:
+        fprintf(out,"POP");
+        break;
+    case JAZZ:
+        fprintf(out,JAZZ);
+        break;
+    case BLUES:
+        fprintf(out,"BLUES");
+        break;
+    case HIP_HOP:
+        fprintf(out,"HIP_HOP");
+        break;
+    case COUNTRY:
+        fprintf(out,"COUNTRY");
+        break;
+    case CLASSIC:
+        fprintf(out,"CLASSIC");
+        break;
+    }
     LinkedList *curr=record_t->own_track;
     for (int i = 0; i < linkedListGetNumElements(record_t->own_track); i++)
     {
@@ -90,8 +118,6 @@ static void printRecord(FILE *out,SetElement element){
         }
 
     }
-    
-     
 }
 
 RecordsDB recordsDbCreate(){
@@ -102,17 +128,91 @@ RecordsDB recordsDbCreate(){
         exit(1);
     }
 
-    if(setCreate(t->records,compareRecordByName,copyRecord,recordFree,printRecord)==SET_BAD_ARGUMENTS){
+    setCreate(&(t->records),compareRecordByName,copyRecord,recordFree,printRecord);
+
+    if(setCreate(&(t->records),compareRecordByName,copyRecord,recordFree,printRecord)==SET_BAD_ARGUMENTS){
         prog_erro_set(SET_BAD_ARGUMENTS);
+        free(t);
         exit(1);
-    }
-
-    if(setCreate(t->records,compareRecordByName,copyRecord,recordFree,printRecord)==SET_OUT_OF_MEMORY){
+    }else
+    {
         prog_erro_set(SET_OUT_OF_MEMORY);
+        free(t);
+        exit(1);
+    }
+    return t;
+}
+
+RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, RecordsCategory category){
+    RecordsDB t=rdb;
+    if (rdb == NULL || name == NULL)
+    {
+        prog3_report_error_message(RDB_NULL_ARGUMENT);
+        exit(1);
+    }
+    if (year<1900)
+    {
+        prog3_report_error_message(RDB_INVALID_YEAR);
+        exit(1);
+    }
+    if(setFind(rdb->records,t,name,compareRecordByName)==SET_SUCCESS){
+        prog3_report_error_message(RDB_RECORD_ALREADY_EXISTS);
+        exit(1);
+    }
+    
+    record new=(record)malloc(sizeof(record_curr));
+    if (new == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
         exit(1);
     }
 
+    new->name=(char *)malloc(strlen(name)+1);
+    if (new->name == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        free(new);
+        exit(1);
+    }
     
+    strcpy(new->name,name);
+    new->year=year;
 
+    switch (category)
+    {
+        case ROCK:
+            new->ct=ROCK;
+        break;
+        case POP:
+            new->ct=POP;
+        break;
+        case JAZZ:
+            new->ct=JAZZ;
+        break;
+        case BLUES:
+            new->ct=BLUES;
+        break;
+        case HIP_HOP:
+            new->ct=HIP_HOP;
+        break;
+        case COUNTRY:
+            new->ct=COUNTRY;
+            break;
+        case CLASSIC:
+            new->ct=CLASSIC;
+            break;         
+    }
+    if(setAdd(rdb->records, new)== SET_SUCCESS){
+        return RDB_SUCCESS;
+    }
+}
+void recordsDbDestroy(RecordsDB d)
+{
+    if (d != NULL)
+    {
+        setDestroy(d->records);
+        free(d);
+    }
+    
 }
 
