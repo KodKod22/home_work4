@@ -1,5 +1,7 @@
 #include "records_db.h"
 #include "linked_list.h"
+#include"erro_print.h"
+#include"set.h"
 #include<stdlib.h>
 #include<string.h>
 void prog3_report_error_message(RecordsResult res)
@@ -69,6 +71,33 @@ void prog_erro_list(ListResult mess){
     }
     printf("\n");
 }
-RecordsDB recordsDbCreate(){
+
+void prog_erro_set(SetResult t){
+    if (t == NULL)
+    {
+        return;
+    }
+    fprintf(stderr,"erro: ");
+    switch (t)
+    {
+    case SET_SUCCESS:
+        printf("SET_SUCCESS");
+        break;
+    
+    case SET_BAD_ARGUMENTS:
+        printf("SET_BAD_ARGUMENTS");
+        break;
+
+    case SET_OUT_OF_MEMORY:
+        printf("SET_OUT_OF_MEMORY");
+        break;
+
+    case SET_ELEMENT_EXISTS:
+        printf("SET_ELEMENT_EXISTS");
+        break;
+
+    case SET_ELEMENT_DOES_NOT_EXIST:
+        break;
+    }
 
 }
