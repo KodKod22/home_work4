@@ -23,10 +23,6 @@ typedef struct RecordsDB_s
     Set records;
 }RecordsDB_s;
 
-static void print_catgory(FILE *out,RecordsCategory rez){
-    
-}
-
 static SetElement copyRecord(SetElement d){
     if (!d)
     {
@@ -142,6 +138,18 @@ RecordsDB recordsDbCreate(){
     }
     return t;
 }
+void recordsDbDestroy(RecordsDB d)
+{
+    if (d == NULL)
+    {
+        prog3_report_error_message(RDB_NO_RECORDS);
+    }
+    if (setDestroy(d->records) != SET_SUCCESS)
+    {
+        prog_erro_set(SET_BAD_ARGUMENTS);
+    }
+    free(d);
+}
 
 RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, RecordsCategory category){
     RecordsDB t=rdb;
@@ -206,13 +214,30 @@ RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, Reco
         return RDB_SUCCESS;
     }
 }
-void recordsDbDestroy(RecordsDB d)
-{
-    if (d != NULL)
+RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
+    RecordsDB temp=(RecordsDB)malloc(sizeof(RecordsDB_s));
+    if (temp == NULL)
     {
-        setDestroy(d->records);
-        free(d);
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
     }
     
+    if (rdb == NULL)
+    {
+        return SET_BAD_ARGUMENTS;
+    }
+    setGetFirst(rdb->records,temp);
+
+    if (setFind(rdb->records,temp->records,name,compareRecordByName) == SET_SUCCESS)
+    {
+        if (setRemove(rdb,temp) != SET_SUCCESS)
+        {
+            return NULL;
+        }
+        
+    }else{
+        return RDB_RECORD_DOESNT_EXIST;
+    }
+
+    return SET_SUCCESS;
 }
 
