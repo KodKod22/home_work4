@@ -241,3 +241,6 @@ RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
     return SET_SUCCESS;
 }
 
+RecordsResult recordsDbReportRecords (RecordsDB rdb, RecordsCategory category){
+    
+}
