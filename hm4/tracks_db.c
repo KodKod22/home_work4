@@ -10,12 +10,12 @@
 
 
 
-typedef struct tracks_db
+typedef struct Track_DB
 {
     char *name_track;
     int legth;
     int position;
-}tracks_db,*tracksDB;
+}Track_DB,*tracksDB;
 
 
 typedef struct trackDB
@@ -32,14 +32,14 @@ static ListElement copyTrack(ListElement new_track)
     {
         return NULL;
     }
-    tracks_db* track_copy = (tracks_db*)malloc(sizeof(tracks_db));
+    Track_DB* track_copy = (Track_DB*)malloc(sizeof(Track_DB));
 
     if(track_copy ==NULL)
     {
         return NULL;
         exit(1);
     }
-    tracks_db* old_track = (tracks_db*)new_track;
+    Track_DB* old_track = (Track_DB*)new_track;
 
     track_copy->name_track = (char*)malloc(strlen(old_track->name_track)+1);
     if(track_copy->name_track == NULL)
@@ -74,7 +74,7 @@ static void trackfree(SetElement track_free)
     {
         return 0;
     }
-    tracks_db *elm = (tracks_db *)track_free;
+    Track_DB *elm = (Track_DB *)track_free;
     free(elm->name_track);
     free(elm);
 }
@@ -92,7 +92,7 @@ static void printTrack(FILE *out,SetElement track_print)
 void call_all_tracks(LinkedList track_list)
 {
     LinkedList temp = track_list;
-    tracks_db *curr_track=(tracks_db*)malloc(sizeof(tracks_db));
+    Track_DB *curr_track=(Track_DB*)malloc(sizeof(Track_DB));
     temp = (LinkedList)malloc(sizeof(LinkedList));
     if(temp == NULL|| curr_track == NULL)
     {
@@ -157,10 +157,48 @@ RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *
 
 RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, char *trackName)
 {
-    RecordsDB t = rdb;
-    if(setFind(t,recordName,))
-    tracksDB track = trackName;
-    if(setFind())
+    RecordsDB temp = (RecordsDB)malloc(sizeof(RecordsDB));
+    if(temp == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        exit(1);
+    }
+    if(setIsIn(temp,recordName) != SET_ELEMENT_EXISTS)
+    {
+        prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
+        exit(1);
+    }
+
+
+    RecordsDB rec_name =(RecordsDB)malloc(sizeof(RecordsDB));
+    if(rec_name == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        exit(1);
+    }
+    
+    tracksDB Track_DB;
+    tracksDB trc_name = (tracksDB)malloc(sizeof(tracksDB));
+        if(trc_name == NULL)
+        {
+            prog3_report_error_message(RDB_OUT_OF_MEMORY);
+            exit(1);
+        }
+        trc_name->name_track = trackName;
+    linkedListGoToHead(Track_DB);
+    while(linkedListGoToNext(Track_DB->name_track) != NULL)
+    {
+        if(setIsIn(Track_DB->name_track,trc_name) != SET_ELEMENT_EXISTS)
+        {
+    
+            prog3_report_error_message(RDB_TRACK_DOESNT_EXIST);
+            exit(1);
+        }
+        free(Track_DB->name_track)
+    }
+   
+    
+    
     
 }
 

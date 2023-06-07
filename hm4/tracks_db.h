@@ -4,7 +4,7 @@
 #include"set.h"
 
 
-typedef struct tracks_db* tracksDB;
+typedef struct Track_DB* tracksDB;
 
 typedef SetElement (*copyTrack)(SetElement);
 typedef void       (*trackfree)(SetElement);

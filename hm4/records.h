@@ -9,6 +9,6 @@ typedef int        (*compareRecordByName)(SetElement,SetElement);
 typedef void       (*printRecord) (FILE*,SetElement);
 int compareRecordByName(SetElement element1,SetElement element2);
 
-typedef struct tracks_db tracksDB;
+typedef struct Track_DB tracksDB;
 
 #endif
