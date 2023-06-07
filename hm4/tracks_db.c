@@ -155,7 +155,7 @@ RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *
 }
 
 
-RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, char *trackName)
+/*RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, char *trackName)
 {
     RecordsDB t = rdb;
     if(setFind(t,recordName,))
@@ -167,4 +167,4 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
 RecordsResult recordsDbReportTracksOfRecord (RecordsDB rdb, char *recordName)
 {
 
-}
+}*/

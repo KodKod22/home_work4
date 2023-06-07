@@ -1,13 +1,18 @@
-#include "records_db.h"
-#include "linked_list.h"
-#include"erro_print.h"
 #include"set.h"
+#include "linked_list.h"
+#include "records_db.h"
+#include"erro_print.h"
 #include<stdlib.h>
 #include<string.h>
+void prog3_report_error_message(RecordsResult);
+
+void prog_erro_list(ListResult);
+
+void prog_erro_set(SetResult);
+
 void prog3_report_error_message(RecordsResult res)
 {
-    if (res == 0)
-    return;
+    
     fprintf(stderr, "Error: ");
     switch (res)
     {
@@ -51,10 +56,7 @@ void prog3_report_error_message(RecordsResult res)
     printf("\n");
 }
 void prog_erro_list(ListResult mess){
-    if (mess == NULL)
-    {
-        return;
-    }
+    
     fprintf(stderr,"erro: ");
     switch (mess)
     {
@@ -75,10 +77,7 @@ void prog_erro_list(ListResult mess){
 }
 
 void prog_erro_set(SetResult t){
-    if (t == NULL)
-    {
-        return;
-    }
+    
     fprintf(stderr,"erro: ");
     switch (t)
     {
