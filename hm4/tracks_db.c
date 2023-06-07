@@ -10,12 +10,12 @@
 
 
 
-typedef struct tracks_db
+typedef struct Tracks_DB
 {
     char *name_track;
     int legth;
     int position;
-}tracks_db,*tracksDB;
+}Tracks_DB,*tracksDB;
 
 
 typedef struct trackDB
@@ -32,14 +32,14 @@ static ListElement copyTrack(ListElement new_track)
     {
         return NULL;
     }
-    tracks_db* track_copy = (tracks_db*)malloc(sizeof(tracks_db));
+    Tracks_DB* track_copy = (Tracks_DB*)malloc(sizeof(Tracks_DB));
 
     if(track_copy ==NULL)
     {
         return NULL;
         exit(1);
     }
-    tracks_db* old_track = (tracks_db*)new_track;
+    Tracks_DB* old_track = (Tracks_DB*)new_track;
 
     track_copy->name_track = (char*)malloc(strlen(old_track->name_track)+1);
     if(track_copy->name_track == NULL)
@@ -74,7 +74,7 @@ static void trackfree(SetElement track_free)
     {
         return 0;
     }
-    tracks_db *elm = (tracks_db *)track_free;
+    Tracks_DB *elm = (Tracks_DB *)track_free;
     free(elm->name_track);
     free(elm);
 }
@@ -92,7 +92,7 @@ static void printTrack(FILE *out,SetElement track_print)
 void call_all_tracks(LinkedList track_list)
 {
     LinkedList temp = track_list;
-    tracks_db *curr_track=(tracks_db*)malloc(sizeof(tracks_db));
+    Tracks_DB *curr_track=(Tracks_DB*)malloc(sizeof(Tracks_DB));
     temp = (LinkedList)malloc(sizeof(LinkedList));
     if(temp == NULL|| curr_track == NULL)
     {
@@ -177,7 +177,7 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
         exit(1);
     }
     
-    tracksDB tracks_db;
+    tracksDB Tracks_DB;
     tracksDB trc_name = (tracksDB)malloc(sizeof(tracksDB));
         if(trc_name == NULL)
         {
@@ -185,16 +185,16 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
             exit(1);
         }
         trc_name->name_track = trackName;
-    linkedListGoToHead(tracks_db);
-    while(linkedListGoToNext(tracks_db->name_track) != NULL)
+    linkedListGoToHead(Tracks_DB);
+    while(linkedListGoToNext(Tracks_DB->name_track) != NULL)
     {
-        if(setIsIn(tracks_db->name_track,trc_name) != SET_ELEMENT_EXISTS)
+        if(setIsIn(Tracks_DB->name_track,trc_name) != SET_ELEMENT_EXISTS)
         {
     
             prog3_report_error_message(RDB_TRACK_DOESNT_EXIST);
             exit(1);
         }
-        free(tracks_db->name_track)
+        free(Tracks_DB->name_track)
     }
    
     
