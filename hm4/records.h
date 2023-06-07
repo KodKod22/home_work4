@@ -3,8 +3,6 @@
 #include"set.h"
 #include"tracks.h"
 
-typedef struct record_curr* record;
-
 typedef SetElement (*copyRecord)(SetElement);
 typedef void       (*recordFree)(SetElement);
 typedef int        (*compareRecordByName)(SetElement,SetElement);

@@ -24,7 +24,8 @@ void prog3_report_error_message(RecordsResult res)
             printf("RDB_INVALID_YEAR");
             break;
         case RDB_INVALID_CATEGORY:
-            printf("RDB_INVALID_CATEGORY");  
+            printf("RDB_INVALID_CATEGORY");
+            break;  
         case RDB_RECORD_ALREADY_EXISTS:
             printf("RDB_RECORD_ALREADY_EXISTS");
             break;  
@@ -33,6 +34,7 @@ void prog3_report_error_message(RecordsResult res)
             break; 
         case RDB_INVALID_TRACK_LENGTH:
             printf("RDB_INVALID_TRACK_LENGTH");
+            break;
         case RDB_TRACK_ALREADY_EXISTS:
             printf("RDB_TRACK_ALREADY_EXISTS");
             break;
