@@ -10,12 +10,12 @@
 
 
 
-typedef struct tracks_db
+typedef struct tracks
 {
     char *name_track;
     int legth;
     int position;
-}tracks_db,*tracksDB;
+}tracks,*tracks_ptr;
 
 
 typedef struct trackDB
@@ -32,14 +32,14 @@ static ListElement copyTrack(ListElement new_track)
     {
         return NULL;
     }
-    tracks_db* track_copy = (tracks_db*)malloc(sizeof(tracks_db));
+    tracks* track_copy = (tracks*)malloc(sizeof(tracks));
 
     if(track_copy ==NULL)
     {
         return NULL;
         exit(1);
     }
-    tracks_db* old_track = (tracks_db*)new_track;
+    tracks* old_track = (tracks*)new_track;
 
     track_copy->name_track = (char*)malloc(strlen(old_track->name_track)+1);
     if(track_copy->name_track == NULL)
@@ -57,8 +57,8 @@ static ListElement copyTrack(ListElement new_track)
 //copmare two tracks by name
 static int compareTrackByName(SetElement track_name1,SetElement track_name2)
 {
-    tracksDB first_track = (tracksDB)track_name1;
-    tracksDB second_track = (tracksDB)track_name2;
+    tracks_ptr first_track = (tracks_ptr)track_name1;
+    tracks_ptr second_track = (tracks_ptr)track_name2;
 
     if(first_track == NULL || second_track == NULL)
     {
@@ -74,7 +74,7 @@ static void trackfree(SetElement track_free)
     {
         return 0;
     }
-    tracks_db *elm = (tracks_db *)track_free;
+    tracks_ptr *elm = (tracks_ptr *)track_free;
     free(elm->name_track);
     free(elm);
 }
