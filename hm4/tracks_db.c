@@ -194,12 +194,9 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
             prog3_report_error_message(RDB_TRACK_DOESNT_EXIST);
             exit(1);
         }
-        free(Tracks_DB->name_track)
+        linkedListRemoveCurrent(Tracks_DB->name_track);
     }
-   
-    
-    
-    
+    return RDB_SUCCESS;
 }
 
 RecordsResult recordsDbReportTracksOfRecord (RecordsDB rdb, char *recordName)
