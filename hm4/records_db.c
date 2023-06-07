@@ -2,7 +2,7 @@
 #include"set.h"
 #include"records_db.h"
 #include"tracks_db.h"
-#include"records.h"
+#include"tracks_db.h"
 #include"tracks.h"
 #include"erro_print.h"
 #include<stdio.h>
@@ -238,9 +238,39 @@ RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
         return RDB_RECORD_DOESNT_EXIST;
     }
 
-    return SET_SUCCESS;
+    return RDB_SUCCESS;
 }
 
 RecordsResult recordsDbReportRecords (RecordsDB rdb, RecordsCategory category){
-    
+    RecordsDB t = rdb;
+    record curr = (record)malloc(sizeof(record_curr));
+    tracksDB* track1 = (tracksDB*)malloc(sizeof(tracksDB));
+    if(curr == NULL || track1 == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        exit(1);
+    }
+    if(t == NULL)
+    {
+        prog3_report_error_message(RDB_NO_RECORDS);
+        exit(1);
+    }
+    if(setIsIn(rdb->records,category) != SET_ELEMENT_EXISTS)
+    {
+        prog3_report_error_message(RDB_INVALID_CATEGORY);
+        exit(1);
+    }
+
+    setGetFirst(t->records,curr);
+    while(setGetNext(t->records,curr) != SET_ELEMENT_DOES_NOT_EXIST)
+    {
+        prog2_report_record(stdout, curr->name, curr->year, curr->num_of_traks, curr->ct);
+        linkedListGoToHead(curr->own_track);
+        while(curr->own_track != NULL)
+        {
+            call_all_tracks(curr->own_track);
+            linkedListGoToNext(curr->own_track);
+        }
+    }
+    return RDB_SUCCESS;
 }

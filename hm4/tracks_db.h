@@ -12,6 +12,6 @@ typedef int        (*compareTrackByName)(SetElement,SetElement);
 typedef void       (*printTrack) (FILE*,SetElement);
 
 RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *trackName, int trackLength);
-
+void call_all_tracks(LinkedList);
 
 #endif

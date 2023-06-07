@@ -5,6 +5,8 @@
 #include"set.h"
 #include"records_db.h"
 #include"erro_print.h"
+#include"tracks_db.h"
+#include"tracks.h"
 
 
 
@@ -18,7 +20,7 @@ typedef struct tracks_db
 
 typedef struct trackDB
 {
-    Set tracks;
+    LinkedList tracks;
 }trackDB;
 
 
@@ -87,21 +89,42 @@ static void printTrack(FILE *out,SetElement track_print)
     }
     fprintf(out,"%s,%d,%d",track_t->name_track,track_t->legth,track_t->position);
 }
+void call_all_tracks(LinkedList track_list)
+{
+    LinkedList temp = track_list;
+    tracks_db *curr_track=(tracks_db*)malloc(sizeof(tracks_db));
+    temp = (LinkedList)malloc(sizeof(LinkedList));
+    if(temp == NULL|| curr_track == NULL)
+    {
+        prog_erro_list(LIST_OUT_OF_MEMORY);
+        exit(1);
+    }
+    linkedListGoToHead(temp);
+    while(temp != NULL)
+    {
+        linkedListGetCurrent(track_list,curr_track);
+        prog2_report_track(stdout, curr_track->name_track,curr_track->legth);
+    }
+    free(temp);
+    free(curr_track);
+}
 
 
 RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *trackName, int trackLength)
 {
-    RecordsDB record;
+    RecordsDB t = rdb;
     
     if(rdb == NULL)
     {
         prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
         exit(1);
     }
-    if(compareRecordByName(recordName,))
-
-
-
+    if(setIsIn(t,recordName) == SET_ELEMENT_DOES_NOT_EXIST)
+    {
+        prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
+        exit(1);
+    }
+    
     tracksDB track;
     if(trackLength <= 0)
     {
@@ -116,11 +139,32 @@ RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *
         prog3_report_error_message(RDB_TRACK_ALREADY_EXISTS);
         exit(1);
     }
+    track->name_track = (char*)malloc(strlen(trackName)+1);
+    if(track->name_track == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        free(track);
+        exit(1);
+    }
     strcpy(track->name_track,trackName);
-    
-    
+    if(linkedListInsertLast(track->position,track->name_track) != LIST_SUCCESS)
+    {
+        return LIST_FAIL;
+    }
+    return RDB_SUCCESS;
+}
 
-    
+
+RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, char *trackName)
+{
+    RecordsDB t = rdb;
+    if(setFind(t,recordName,))
+    tracksDB track = trackName;
+    if(setFind())
     
 }
 
+RecordsResult recordsDbReportTracksOfRecord (RecordsDB rdb, char *recordName)
+{
+
+}
