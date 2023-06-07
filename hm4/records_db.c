@@ -15,7 +15,7 @@ typedef struct record_curr
     int year;
     int num_of_traks;
     RecordsCategory ct;
-    LinkedList *own_track;
+    LinkedList own_track;
 }record_curr,*record;
 
 typedef struct RecordsDB_s
@@ -87,7 +87,7 @@ static void printRecord(FILE *out,SetElement element){
         fprintf(out,"POP");
         break;
     case JAZZ:
-        fprintf(out,JAZZ);
+        fprintf(out,"JAZZ");
         break;
     case BLUES:
         fprintf(out,"BLUES");
@@ -102,8 +102,10 @@ static void printRecord(FILE *out,SetElement element){
         fprintf(out,"CLASSIC");
         break;
     }
-    LinkedList *curr=record_t->own_track;
-    for (int i = 0; i < linkedListGetNumElements(record_t->own_track); i++)
+    LinkedList curr;
+    curr=record_t->own_track;
+    int number=linkedListGetNumElements(curr);
+    for (int i = 0; i < number; i++)
     {
         linkedListPrint(curr,out,record_t->num_of_traks);
         if(linkedListGoToHead(curr)== LIST_BAD_ARGUMENTS){
@@ -153,6 +155,13 @@ void recordsDbDestroy(RecordsDB d)
 
 RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, RecordsCategory category){
     RecordsDB t=rdb;
+    char *curr_name=(char *)malloc(strlen(name)+1);
+    if (curr_name == NULL)
+    {
+        prog3_report_error_message(RDB_OUT_OF_MEMORY);
+        exit(1);
+    }
+    
     if (rdb == NULL || name == NULL)
     {
         prog3_report_error_message(RDB_NULL_ARGUMENT);
@@ -163,7 +172,9 @@ RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, Reco
         prog3_report_error_message(RDB_INVALID_YEAR);
         exit(1);
     }
-    if(setFind(rdb->records,t,name,compareRecordByName)==SET_SUCCESS){
+    SetElement key=t->records;
+    strcpy(curr_name,name);
+    if(setFind(rdb->records,key,curr_name,compareRecordByName)==SET_SUCCESS){
         prog3_report_error_message(RDB_RECORD_ALREADY_EXISTS);
         exit(1);
     }
@@ -213,9 +224,10 @@ RecordsResult recordsDbAddRecord(RecordsDB rdb, const char *name, int year, Reco
     if(setAdd(rdb->records, new)== SET_SUCCESS){
         return RDB_SUCCESS;
     }
+    return RDB_SUCCESS;
 }
 RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
-    RecordsDB temp=(RecordsDB)malloc(sizeof(RecordsDB_s));
+    RecordsDB *temp=(RecordsDB*)malloc(sizeof(RecordsDB_s*));
     if (temp == NULL)
     {
         prog3_report_error_message(RDB_OUT_OF_MEMORY);
@@ -225,13 +237,14 @@ RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
     {
         return SET_BAD_ARGUMENTS;
     }
-    setGetFirst(rdb->records,temp);
-
-    if (setFind(rdb->records,temp->records,name,compareRecordByName) == SET_SUCCESS)
+    SetElement key=temp;
+    setGetFirst(rdb->records,key);
+    
+    if (setFind(rdb->records,key,name,compareRecordByName) == SET_SUCCESS)
     {
-        if (setRemove(rdb,temp) != SET_SUCCESS)
+        if (setRemove(rdb->records,temp) != SET_SUCCESS)
         {
-            return NULL;
+            prog3_report_error_message(RDB_NO_RECORDS);
         }
         
     }else{
@@ -245,6 +258,7 @@ RecordsResult recordsDbReportRecords (RecordsDB rdb, RecordsCategory category){
     RecordsDB t = rdb;
     record curr = (record)malloc(sizeof(record_curr));
     tracksDB* track1 = (tracksDB*)malloc(sizeof(tracksDB));
+    SetElement key=&category;
     if(curr == NULL || track1 == NULL)
     {
         prog3_report_error_message(RDB_OUT_OF_MEMORY);
@@ -255,14 +269,15 @@ RecordsResult recordsDbReportRecords (RecordsDB rdb, RecordsCategory category){
         prog3_report_error_message(RDB_NO_RECORDS);
         exit(1);
     }
-    if(setIsIn(rdb->records,category) != SET_ELEMENT_EXISTS)
+    if(setIsIn(rdb->records,key) != SET_ELEMENT_EXISTS)
     {
         prog3_report_error_message(RDB_INVALID_CATEGORY);
         exit(1);
     }
-
-    setGetFirst(t->records,curr);
-    while(setGetNext(t->records,curr) != SET_ELEMENT_DOES_NOT_EXIST)
+    SetElement key2=curr;
+    setGetFirst(t->records,key2);
+    
+    while(setGetNext(t->records,key2) != SET_ELEMENT_DOES_NOT_EXIST)
     {
         prog2_report_record(stdout, curr->name, curr->year, curr->num_of_traks, curr->ct);
         linkedListGoToHead(curr->own_track);
