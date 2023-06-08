@@ -5,9 +5,9 @@
 #include"tracks_db.h"
 #include"tracks.h"
 
-typedef struct track
+/*typedef struct track
 {
     char *name_track;
     int legth;
     int position;
-}track;
+}track;*/

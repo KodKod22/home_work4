@@ -4,14 +4,14 @@
 #include"set.h"
 
 
-typedef struct Track_DB* tracksDB;
+typedef struct Track* track;
 
-typedef SetElement (*copyTrack)(SetElement);
-typedef void       (*trackfree)(SetElement);
-typedef int        (*compareTrackByName)(SetElement,SetElement);
-typedef void       (*printTrack) (FILE*,SetElement);
+/*typedef ListElement (*copyTrack)(ListElement);
+typedef void       (*trackfree)(ListElement);
+typedef int        (*compareTrackByName)(ListElement,ListElement);
+typedef void       (*printTrack) (FILE*,ListElement);*/
 
-RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *trackName, int trackLength);
+RecordsResult recordsDbAddTrackToRecord (RecordsDB, char *, char *, int);
 void call_all_tracks(LinkedList);
 
 #endif

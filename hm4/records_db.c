@@ -257,7 +257,7 @@ RecordsResult recordsDbRemoveRecord (RecordsDB rdb, char *name){
 RecordsResult recordsDbReportRecords (RecordsDB rdb, RecordsCategory category){
     RecordsDB t = rdb;
     record curr = (record)malloc(sizeof(record_curr));
-    tracksDB* track1 = (tracksDB*)malloc(sizeof(tracksDB));
+    track* track1 = (track*)malloc(sizeof(track));
     SetElement key=&category;
     if(curr == NULL || track1 == NULL)
     {

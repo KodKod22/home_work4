@@ -1,21 +1,22 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
 #include"linked_list.h"
-#include"set.h"
 #include"records_db.h"
+#include"records.h"
 #include"erro_print.h"
 #include"tracks_db.h"
 #include"tracks.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
 
 
-typedef struct Tracks_DB
+
+typedef struct Track
 {
     char *name_track;
     int legth;
     int position;
-}Tracks_DB,*tracksDB;
+}Track;
 
 
 typedef struct trackDB
@@ -32,14 +33,14 @@ static ListElement copyTrack(ListElement new_track)
     {
         return NULL;
     }
-    Tracks_DB* track_copy = (Tracks_DB*)malloc(sizeof(Tracks_DB));
+    Track* track_copy = (Track*)malloc(sizeof(Track));
 
     if(track_copy ==NULL)
     {
         return NULL;
         exit(1);
     }
-    Tracks_DB* old_track = (Tracks_DB*)new_track;
+    Track* old_track = (Track*)new_track;
 
     track_copy->name_track = (char*)malloc(strlen(old_track->name_track)+1);
     if(track_copy->name_track == NULL)
@@ -55,10 +56,10 @@ static ListElement copyTrack(ListElement new_track)
 
 
 //copmare two tracks by name
-static int compareTrackByName(SetElement track_name1,SetElement track_name2)
+static int compareTrackByName(ListElement track_name1,ListElement track_name2)
 {
-    tracksDB first_track = (tracksDB)track_name1;
-    tracksDB second_track = (tracksDB)track_name2;
+    track first_track = (track)track_name1;
+    track second_track = (track)track_name2;
 
     if(first_track == NULL || second_track == NULL)
     {
@@ -68,21 +69,21 @@ static int compareTrackByName(SetElement track_name1,SetElement track_name2)
 }
 
 ////free a tracksDB by name
-static void trackfree(SetElement track_free)
+static void trackfree(ListElement track_free)
 {
     if(track_free == NULL)
     {
-        return 0;
+        return ;
     }
-    Tracks_DB *elm = (Tracks_DB *)track_free;
+    Track *elm = (Track *)track_free;
     free(elm->name_track);
     free(elm);
 }
 
 ///print the tracks
-static void printTrack(FILE *out,SetElement track_print)
+static void printTrack(FILE *out,ListElement track_print)
 {
-    tracksDB track_t = (tracksDB)track_print;
+    track track_t = (track)track_print;
     if(track_t == NULL)
     {
         return;
@@ -91,20 +92,23 @@ static void printTrack(FILE *out,SetElement track_print)
 }
 void call_all_tracks(LinkedList track_list)
 {
-    LinkedList temp = track_list;
-    Tracks_DB *curr_track=(Tracks_DB*)malloc(sizeof(Tracks_DB));
+    ListElement key;
+    LinkedList temp;
+    track curr_track=(track)malloc(sizeof(Track));
     temp = (LinkedList)malloc(sizeof(LinkedList));
     if(temp == NULL|| curr_track == NULL)
     {
         prog_erro_list(LIST_OUT_OF_MEMORY);
         exit(1);
     }
+    temp= track_list;
     linkedListGoToHead(temp);
     while(temp != NULL)
     {
-        linkedListGetCurrent(track_list,curr_track);
+        linkedListGetCurrent(track_list,key);
         prog2_report_track(stdout, curr_track->name_track,curr_track->legth);
     }
+    curr_track=(track)key;
     free(temp);
     free(curr_track);
 }
@@ -112,27 +116,27 @@ void call_all_tracks(LinkedList track_list)
 
 RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *trackName, int trackLength)
 {
-    RecordsDB t = rdb;
     
+    Set record;
+    LinkedList track3;
     if(rdb == NULL)
     {
         prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
         exit(1);
     }
-    if(setIsIn(t,recordName) == SET_ELEMENT_DOES_NOT_EXIST)
+    if(setIsIn(record,recordName) == SET_ELEMENT_DOES_NOT_EXIST)
     {
         prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
         exit(1);
     }
-    
-    tracksDB track;
+    track track;
     if(trackLength <= 0)
     {
         prog3_report_error_message(RDB_INVALID_TRACK_LENGTH);
         exit(1);
     }
     track->legth = trackLength;
-
+    
 
     if(compareTrackByName(trackName,track->name_track) != 0)
     {
@@ -147,7 +151,8 @@ RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *
         exit(1);
     }
     strcpy(track->name_track,trackName);
-    if(linkedListInsertLast(track->position,track->name_track) != LIST_SUCCESS)
+    track3=copyTrack(track3);
+    if(linkedListInsertLast(track3,track->name_track) != LIST_SUCCESS)
     {
         return LIST_FAIL;
     }
@@ -163,7 +168,8 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
         prog3_report_error_message(RDB_OUT_OF_MEMORY);
         exit(1);
     }
-    if(setIsIn(temp,recordName) != SET_ELEMENT_EXISTS)
+    Set record;
+    if(setIsIn(record,recordName) != SET_ELEMENT_EXISTS)
     {
         prog3_report_error_message(RDB_RECORD_DOESNT_EXIST);
         exit(1);
@@ -177,8 +183,8 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
         exit(1);
     }
     
-    tracksDB Tracks_DB;
-    tracksDB trc_name = (tracksDB)malloc(sizeof(tracksDB));
+    track Tracks_DB;
+    track trc_name = (track)malloc(sizeof(track));
         if(trc_name == NULL)
         {
             prog3_report_error_message(RDB_OUT_OF_MEMORY);
@@ -199,7 +205,7 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
     return RDB_SUCCESS;
 }
 
-RecordsResult recordsDbReportTracksOfRecord (RecordsDB rdb, char *recordName)
+/*RecordsResult recordsDbReportTracksOfRecord (RecordsDB rdb, char *recordName)
 {
 
-}
+}*/
