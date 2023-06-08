@@ -1,15 +1,12 @@
 #include"linked_list.h"
 #include"records_db.h"
+#include"tracks_db.h"
+#include"set.h"
 #include"records.h"
 #include"erro_print.h"
-#include"tracks_db.h"
-#include"tracks.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-
-
 
 typedef struct Track
 {
@@ -23,7 +20,6 @@ typedef struct trackDB
 {
     LinkedList tracks;
 }trackDB;
-
 
 
 // add a new truck to the record by coping from track_copy
@@ -89,6 +85,41 @@ static void printTrack(FILE *out,ListElement track_print)
         return;
     }
     fprintf(out,"%s,%d,%d",track_t->name_track,track_t->legth,track_t->position);
+}
+
+trackDB_ptr tracksDbCreate(){
+    trackDB_ptr t=(trackDB_ptr)malloc(sizeof(trackDB));
+    if (t == NULL)
+    {
+        prog_erro_set(LIST_OUT_OF_MEMORY);
+        exit(1);
+    }
+
+    linkedListCreate(&(t->tracks),copyTrack,trackfree,printTrack);
+
+    if(linkedListCreate(&(t->tracks),copyTrack,trackfree,printTrack)==LIST_BAD_ARGUMENTS){
+        prog_erro_set(LIST_BAD_ARGUMENTS);
+        free(t);
+        exit(1);
+    }else
+    {
+        prog_erro_set(LIST_OUT_OF_MEMORY);
+        free(t);
+        exit(1);
+    }
+    return t;
+}
+void recordsDbDestroy(trackDB_ptr d)
+{
+    if (d == NULL)
+    {
+        prog3_report_error_message(RDB_NO_RECORDS);
+    }
+    if (linkedListDestroy(d->tracks) != LIST_SUCCESS)
+    {
+        prog_erro_list(LIST_BAD_ARGUMENTS);
+    }
+    free(d);
 }
 void call_all_tracks(LinkedList track_list)
 {
