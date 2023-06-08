@@ -182,7 +182,7 @@ RecordsResult recordsDbAddTrackToRecord(RecordsDB rdb, char *recordName, char *t
         exit(1);
     }
     strcpy(track->name_track,trackName);
-    track3=(LinkedList)copyTrack(track3);
+    track3 = (LinkedList)copyTrack(track3);
     if(linkedListInsertLast(track3,track->name_track) != LIST_SUCCESS)
     {
         return LIST_FAIL;
