@@ -114,7 +114,7 @@ void call_all_tracks(LinkedList track_list)
 }
 
 
-RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *trackName, int trackLength)
+RecordsResult recordsDbAddTrackToRecord(RecordsDB rdb, char *recordName, char *trackName, int trackLength)
 {
     
     Set record;
@@ -151,7 +151,7 @@ RecordsResult recordsDbAddTrackToRecord (RecordsDB rdb, char *recordName, char *
         exit(1);
     }
     strcpy(track->name_track,trackName);
-    track3=copyTrack(track3);
+    track3=(LinkedList)copyTrack(track3);
     if(linkedListInsertLast(track3,track->name_track) != LIST_SUCCESS)
     {
         return LIST_FAIL;
@@ -183,7 +183,7 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
         exit(1);
     }
     
-    track Tracks_DB;
+    LinkedList Tracks_DB;
     track trc_name = (track)malloc(sizeof(track));
         if(trc_name == NULL)
         {
@@ -192,15 +192,15 @@ RecordsResult recordsDbRemoveTrackFromRecord (RecordsDB rdb, char *recordName, c
         }
         trc_name->name_track = trackName;
     linkedListGoToHead(Tracks_DB);
-    while(linkedListGoToNext(Tracks_DB->name_track) != NULL)
+    while(linkedListGoToNext(Tracks_DB) != LIST_BAD_ARGUMENTS)
     {
-        if(setIsIn(Tracks_DB->name_track,trc_name) != SET_ELEMENT_EXISTS)
+        if(setIsIn(record,trc_name) != SET_ELEMENT_EXISTS)
         {
     
             prog3_report_error_message(RDB_TRACK_DOESNT_EXIST);
             exit(1);
         }
-        linkedListRemoveCurrent(Tracks_DB->name_track);
+        linkedListRemoveCurrent(Tracks_DB);
     }
     return RDB_SUCCESS;
 }
